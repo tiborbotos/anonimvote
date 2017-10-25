@@ -1,1 +1,26 @@
-<app-vote-creator></app-vote-creator>
+<div>
+
+    <header>
+        <h1>
+            AnonymVote
+        </h1>
+
+    </header>
+
+    <section *ngIf="isCurrentModeWelcome()">
+        <div class="welcome">
+            <input type="text" [ngModel]="roomId">
+            <p>or</p>
+            <button>Create new vote</button>
+        </div>
+    </section>
+
+    <section *ngIf="isCurrentModeCreator()">
+        <div class="creator">
+            <label for="name"></label>
+            <input type="text" id="name" [ngModel]="name">
+            <button>Create</button>
+        </div>
+    </section>
+
+</div>
