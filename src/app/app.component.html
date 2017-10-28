@@ -1,26 +1,108 @@
-<div>
+<div class="container">
 
-    <header>
-        <h1>
-            AnonymVote
-        </h1>
+    <div class="row" *ngIf="isCurrentModeOpenPoll()">
+        <div class="col"></div>
+        <div class="col-sm-10 col-md-8 col-lg-6">
+            <header class="text-center">
+                <h1 class="display-3">
+                    Anonym Poll
+                </h1>
+            </header>
 
-    </header>
+            <div class="row">
+                <div class="col">
+                    <form name="welcomeForm">
 
-    <section *ngIf="isCurrentModeWelcome()">
-        <div class="welcome">
-            <input type="text" [ngModel]="roomId">
-            <p>or</p>
-            <button>Create new vote</button>
+                        <ngb-alert *ngIf="errorMessage"
+                                   [dismissible]="false">
+                            {{errorMessage}}
+                        </ngb-alert>
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input id="yourName" name="yourName"
+                                       class="form-control"
+                                       type="text"
+                                       placeholder="Your name"
+                                       maxlength="120"
+                                       [(ngModel)]="currentUser.name">
+                            </div>
+                            <p><small>You can use a fake name, a nick or nothing at all. You can opt out your name if you want more privacy</small></p>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pollId">Enter the Poll's ID</label>
+                            <div class="input-group">
+                                <input id="pollId" name="pollId"
+                                       class="form-control"
+                                       type="text"
+                                       maxlength="6"
+                                       [(ngModel)]="pollId">
+                            </div>
+                            <p><small>You can join to an existing poll, just enter it's id. It should be 6 characters, like AAA90Z.</small></p>
+                        </div>
+
+                        <div class="form-group text-center">
+                            <button class="btn"
+                                    [ngClass]="{'btn-default': !isValidRoom(), 'btn-success': isValidRoom()}"
+                                    [disabled]="!isValidRoom()"
+                                    (click)="openPoll()">Open Poll</button>
+                        </div>
+
+                        <div class="form-group text-center">
+                            <p>or</p>
+                            <button class="btn btn-outline-primary" (click)="createPoll()">Create new poll</button>
+                            <p><small>where you can set options, invite participants, etc</small></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-    </section>
 
-    <section *ngIf="isCurrentModeCreator()">
-        <div class="creator">
-            <label for="name"></label>
-            <input type="text" id="name" [ngModel]="name">
-            <button>Create</button>
+        <div class="col"></div>
+    </div>
+
+    <div class="row" *ngIf="isCurrentModeCreator()">
+        <div class="col"></div>
+        <div class="col-sm-10 col-md-8 col-lg-6">
+            <ngb-tabset>
+                <ngb-tab title="Poll Options">
+                    <ng-template ngbTabContent>
+
+                        <div class="form-group">
+                            <label for="title">Title</label>
+                            <input id="title" name="title" type="text" class="form-control" [(ngModel)]="pollOptions.title">
+                        </div>
+
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" [(ngModel)]="pollOptions.extendable">
+                                Anybody can add new options to poll
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" [(ngModel)]="pollOptions.multiSelect">
+                                Participants can select multiple options
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="title">Participants can give point to an option</label>
+                            <select class="custom-select" [(ngModel)]="pollOptions.maxPointsPerOption">
+                                <option selected value="1">One point per option</option>
+                                <option value="2">Two point per option</option>
+                                <option value="3">... point per option (select this to specify)</option>
+                                <option value="0">Unlimited points</option>
+                            </select>
+                        </div>
+
+                    </ng-template>
+                </ngb-tab>
+            </ngb-tabset>
         </div>
-    </section>
+        <div class="col"></div>
+    </div>
 
 </div>

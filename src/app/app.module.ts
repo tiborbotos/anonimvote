@@ -9,6 +9,7 @@ import {EditorItemComponent} from './editor-item/editor-item.component';
 import {AdminComponent} from './admin/admin.component';
 import {VotingComponent} from './voting/voting.component';
 import {GunDb} from './db.service';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
     declarations: [
@@ -21,7 +22,8 @@ import {GunDb} from './db.service';
     imports: [
         BrowserModule,
         FormsModule,
-        HttpModule
+        HttpModule,
+        NgbModule.forRoot()
     ],
     providers: [GunDb],
     bootstrap: [AppComponent]
