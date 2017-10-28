@@ -1,6 +1,6 @@
 import { AnonimvotePage } from './app.po';
 
-describe('anonimvote App', () => {
+describe('anonymvote App', () => {
   let page: AnonimvotePage;
 
   beforeEach(() => {
