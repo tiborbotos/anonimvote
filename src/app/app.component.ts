@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {GunDb, PollOptions, Participant} from './db.service';
+import {GunDb, PollOptions, Participant, Poll} from './db.service';
 
 enum AppMode {
     OPEN_POLL,
@@ -13,13 +13,13 @@ enum AppMode {
     styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-    pollId = '';
+    pollId = 'p1j3uh';
     errorMessage = '';
     currentUser: Participant;
     pollOptions: PollOptions;
 
     private mode = AppMode.OPEN_POLL;
-    private poll = null;
+    private poll: Poll = null;
 
     constructor(private gunDb: GunDb) {
         this.currentUser = {
@@ -46,10 +46,8 @@ export class AppComponent {
 
     // creates a new poll instance
     createPoll() {
-        this.poll = this.gunDb.createPoll(this.currentUser)
-            .then(() => {
-                this.mode = AppMode.CREATOR;
-            })
+        this.gunDb.createPoll(this.currentUser)
+            .then(this.enterPoll.bind(this))
             .catch(() => {
                 this.errorMessage = 'An error occurred and we couldn\'t create this poll';
             });
@@ -58,16 +56,15 @@ export class AppComponent {
     // connects to an existing poll
     openPoll() {
         this.gunDb.openPoll(this.pollId, this.currentUser)
-            .then((poll) => {
-                this.poll = poll;
-                this.mode = AppMode.CREATOR;
-            })
+            .then(this.enterPoll.bind(this))
             .catch(() => {
                 this.errorMessage = 'An error occured and we couldn\'t connect to this poll';
             });
     }
 
-    enterPoll() {
-        this.pollOptions = this.poll.val('options');
+    private enterPoll(poll) {
+        this.mode = AppMode.CREATOR;
+        this.poll = poll;
+        this.pollOptions = this.poll.options;
     }
 }

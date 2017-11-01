@@ -88,9 +88,18 @@
                             </label>
                         </div>
 
-                        <div class="form-group">
-                            <label for="title">Participants can give point to an option</label>
-                            <select class="custom-select" [(ngModel)]="pollOptions.maxPointsPerOption">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" [(ngModel)]="pollOptions.pointsPerOptionEnabled">
+                                Participants can give point to an option
+                            </label>
+                        </div>
+
+                        <div class="form-group"
+                             *ngIf="pollOptions.pointsPerOptionEnabled">
+                            <label>Maximum points per option</label>
+                            <select class="custom-select"
+                                    [(ngModel)]="pollOptions.maxPointsPerOption" title="xxx">
                                 <option selected value="1">One point per option</option>
                                 <option value="2">Two point per option</option>
                                 <option value="3">... point per option (select this to specify)</option>
