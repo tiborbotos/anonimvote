@@ -27,8 +27,12 @@ export interface PollOptions {
 
 @Injectable()
 export class GunDb {
-    readonly gun = Gun(); // location.origin + '/gun');
+    readonly gun; // location.origin + '/gun');
     private readonly path = GunPath;
+
+    constructor() {
+        this.gun = Gun();
+    }
 
     createPoll(participant: Participant): Promise<Poll> {
         return new Promise((resolve, reject) => {
