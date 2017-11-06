@@ -1,40 +1,48 @@
 import {Injectable} from '@angular/core';
 import Gun from 'gun/gun';
 import GunPath from 'gun/lib/path';
+import GunOpen from 'gun/lib/open';
 import {IPromise} from 'q';
 
-export interface Participant {
+export interface User {
     id: number;
     name: string;
 }
 
 export interface Poll {
     id: string;
-    creator: Participant;
+    creator: User;
     created: number;
-    options: PollOptions;
+    parameters: PollParameters;
 
     val: any;
 }
 
-export interface PollOptions {
+export interface PollParameters {
     title: string;
     extendable: boolean;
     multiSelect: boolean;
     pointsPerOptionEnabled: boolean;
     maxPointsPerOption: string;
+    options: any;
+}
+
+export interface PollOption {
+    label: string;
+    addedBy: User;
 }
 
 @Injectable()
 export class GunDb {
     readonly gun; // location.origin + '/gun');
+    private readonly open = GunOpen;
     private readonly path = GunPath;
 
     constructor() {
         this.gun = Gun();
     }
 
-    createPoll(participant: Participant): Promise<Poll> {
+    createPoll(participant: User): Promise<Poll> {
         return new Promise((resolve, reject) => {
             const id = Math.floor((1 + Math.random()) * 0x100000000).toString(36).substring(1),
                 pollToStore = {};
@@ -43,7 +51,7 @@ export class GunDb {
                 id,
                 creator: participant,
                 created: Date.now(),
-                options: {
+                parameters: {
                     title: 'Poll ' + id,
                     extendable: false,
                     multiSelect: false,
@@ -51,7 +59,6 @@ export class GunDb {
                 }
             } as Poll;
 
-            console.log('pollToStore', pollToStore);
             this.gun.get('polls').put(pollToStore, (ack) => {
                 if (ack.err) {
                     reject();
@@ -62,14 +69,19 @@ export class GunDb {
         });
     }
 
-    openPoll(pollId: string, user: Participant): Promise<Poll> {
+    openPoll(pollId: string): Promise<Poll> {
         return new Promise((resolve) => {
-            this.gun.get('polls').path(pollId).val((poll) => {
-                this.gun.get('polls').path(pollId + '.options').val((pollOptions) => {
-                    poll.options = pollOptions;
-                    resolve(poll);
-                });
+            this.gun.get('polls').path(pollId).open((poll) => {
+                resolve(poll);
             });
         });
+    }
+
+    addOption(pollId: string, option: any) {
+        this.gun.get('polls').path(pollId + '.parameters.options').set(option);
+    }
+
+    getOptions(pollId: string, cb: (args) => void) {
+        return this.gun.get('polls').path(pollId + '.parameters.options').map().val(cb);
     }
 }

@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {GunDb, PollOptions, Participant, Poll} from './db.service';
+import {GunDb, PollParameters, User, Poll, PollOption} from './db.service';
 
 enum AppMode {
     OPEN_POLL,
@@ -13,10 +13,12 @@ enum AppMode {
     styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-    pollId = 'p1j3uh';
+    pollId = '72vzux';
     errorMessage = '';
-    currentUser: Participant;
-    pollOptions: PollOptions;
+    currentUser: User;
+    pollParameters: PollParameters;
+    pollOptions: Array<PollOption>;
+    newOption: PollOption;
 
     private mode = AppMode.OPEN_POLL;
     private poll: Poll = null;
@@ -55,16 +57,34 @@ export class AppComponent {
 
     // connects to an existing poll
     openPoll() {
-        this.gunDb.openPoll(this.pollId, this.currentUser)
+        this.gunDb.openPoll(this.pollId)
             .then(this.enterPoll.bind(this))
             .catch(() => {
-                this.errorMessage = 'An error occured and we couldn\'t connect to this poll';
+                this.errorMessage = 'An error occurred and we couldn\'t connect to this poll';
             });
+    }
+
+    addNewOption(newOption: PollOption) {
+        newOption.addedBy = this.currentUser;
+
+        this.gunDb.addOption(this.pollId, newOption);
     }
 
     private enterPoll(poll) {
         this.mode = AppMode.CREATOR;
         this.poll = poll;
-        this.pollOptions = this.poll.options;
+        this.pollParameters = this.poll.parameters;
+        this.newOption = {} as PollOption;
+
+        // load options
+        this.pollOptions = [];
+        this.gunDb.getOptions(this.pollId, (result) => {
+            console.log('Options changed ', result);
+
+            result.path('addedBy').val((addedBy: User) => {
+                result.addedBy = addedBy;
+                this.pollOptions.push(result);
+            });
+        });
     }
 }

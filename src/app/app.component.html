@@ -27,7 +27,9 @@
                                        maxlength="120"
                                        [(ngModel)]="currentUser.name">
                             </div>
-                            <p><small>You can use a fake name, a nick or nothing at all. You can opt out your name if you want more privacy</small></p>
+                            <p>
+                                <small>You can use a fake name, a nick or nothing at all. You can opt out your name if you want more privacy</small>
+                            </p>
                         </div>
 
                         <div class="form-group">
@@ -39,20 +41,25 @@
                                        maxlength="6"
                                        [(ngModel)]="pollId">
                             </div>
-                            <p><small>You can join to an existing poll, just enter it's id. It should be 6 characters, like AAA90Z.</small></p>
+                            <p>
+                                <small>You can join to an existing poll, just enter it's id. It should be 6 characters, like AAA90Z.</small>
+                            </p>
                         </div>
 
                         <div class="form-group text-center">
                             <button class="btn"
                                     [ngClass]="{'btn-default': !isValidRoom(), 'btn-success': isValidRoom()}"
                                     [disabled]="!isValidRoom()"
-                                    (click)="openPoll()">Open Poll</button>
+                                    (click)="openPoll()">Open Poll
+                            </button>
                         </div>
 
                         <div class="form-group text-center">
                             <p>or</p>
                             <button class="btn btn-outline-primary" (click)="createPoll()">Create new poll</button>
-                            <p><small>where you can set options, invite participants, etc</small></p>
+                            <p>
+                                <small>where you can set options, invite participants, etc</small>
+                            </p>
                         </div>
                     </form>
                 </div>
@@ -64,42 +71,42 @@
 
     <div class="row" *ngIf="isCurrentModeCreator()">
         <div class="col"></div>
-        <div class="col-sm-10 col-md-8 col-lg-6">
+        <div class="col-sm-10 col-md-10 col-lg-8">
             <ngb-tabset>
                 <ngb-tab title="Poll Options">
                     <ng-template ngbTabContent>
 
                         <div class="form-group">
                             <label for="title">Title</label>
-                            <input id="title" name="title" type="text" class="form-control" [(ngModel)]="pollOptions.title">
+                            <input id="title" name="title" type="text" class="form-control" [(ngModel)]="pollParameters.title">
                         </div>
 
                         <div class="form-check">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" [(ngModel)]="pollOptions.extendable">
+                                <input class="form-check-input" type="checkbox" [(ngModel)]="pollParameters.extendable">
                                 Anybody can add new options to poll
                             </label>
                         </div>
 
                         <div class="form-check">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" [(ngModel)]="pollOptions.multiSelect">
+                                <input class="form-check-input" type="checkbox" [(ngModel)]="pollParameters.multiSelect">
                                 Participants can select multiple options
                             </label>
                         </div>
 
                         <div class="form-check">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" [(ngModel)]="pollOptions.pointsPerOptionEnabled">
+                                <input class="form-check-input" type="checkbox" [(ngModel)]="pollParameters.pointsPerOptionEnabled">
                                 Participants can give point to an option
                             </label>
                         </div>
 
                         <div class="form-group"
-                             *ngIf="pollOptions.pointsPerOptionEnabled">
+                             *ngIf="pollParameters.pointsPerOptionEnabled">
                             <label>Maximum points per option</label>
                             <select class="custom-select"
-                                    [(ngModel)]="pollOptions.maxPointsPerOption" title="xxx">
+                                    [(ngModel)]="pollParameters.maxPointsPerOption" title="xxx">
                                 <option selected value="1">One point per option</option>
                                 <option value="2">Two point per option</option>
                                 <option value="3">... point per option (select this to specify)</option>
@@ -107,7 +114,60 @@
                             </select>
                         </div>
 
+                        <div class="form-group">
+                            <label>New option</label>
+                            <input type="text" class="form-control" [(ngModel)]="newOption.label">
+                            <button class="btn btn-default" (click)="addNewOption(newOption)">Add Option</button>
+                        </div>
+
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Option</th>
+                                <th>Added by</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let option of pollOptions">
+                                <td>
+                                    {{option.label}}
+                                </td>
+                                <td>
+                                    {{option.addedBy.name}}
+
+                                    <span class="pull-right">
+                                        <button class="btn btn-primary btn-outline btn sm">edit</button>
+                                        <button class="btn btn-danger btn-outline btn sm">delete</button>
+                                    </span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
                     </ng-template>
+                </ngb-tab>
+
+                <ngb-tab title="Poll">
+                    <ng-template ngbTabContent>
+                        <h3>
+                            {{pollParameters.title}}
+                            <div class="pull-right">
+                                <button class="btn default">+</button>
+                            </div>
+                        </h3>
+
+                        <div class="form-group" *ngIf="addNewOption">
+                            <label for="newOption">New Option</label>
+                            <input type="text" class="form-control" id="newOption" name="newOption">
+                            <div>
+                                <button class="btn btn-default">Add</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group" *ngFor="let option of pollParameters">
+                        </div>
+                    </ng-template>
+
                 </ngb-tab>
             </ngb-tabset>
         </div>
