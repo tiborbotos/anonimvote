@@ -28,8 +28,10 @@ export interface PollParameters {
 }
 
 export interface PollOption {
+    id: number;
     label: string;
-    addedBy: User;
+    addedById: number;
+    addedByName: string;
 }
 
 @Injectable()

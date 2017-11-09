@@ -115,9 +115,17 @@
                         </div>
 
                         <div class="form-group">
-                            <label>New option</label>
-                            <input type="text" class="form-control" [(ngModel)]="newOption.label">
-                            <button class="btn btn-default" (click)="addNewOption(newOption)">Add Option</button>
+                            <button class="btn btn-primary">Update</button>
+                        </div>
+
+                        <hr>
+
+                        <div class="form-group">
+                            <label for="newOptionLabel">New option</label>
+                            <div class="input-group">
+                                <input id="newOptionLabel" type="text" class="form-control" [(ngModel)]="newOption.label">
+                                <button class="btn btn-default input-group-addon" (click)="addNewOption(newOption)">Add Option</button>
+                            </div>
                         </div>
 
                         <table class="table">
@@ -133,11 +141,10 @@
                                     {{option.label}}
                                 </td>
                                 <td>
-                                    {{option.addedBy.name}}
-
+                                    {{option.addedByName}}
                                     <span class="pull-right">
-                                        <button class="btn btn-primary btn-outline btn sm">edit</button>
-                                        <button class="btn btn-danger btn-outline btn sm">delete</button>
+                                        <button class="btn btn-outline-primary btn-outline btn sm">edit</button>
+                                        <button class="btn btn-outline-danger btn-outline btn sm">delete</button>
                                     </span>
                                 </td>
                             </tr>

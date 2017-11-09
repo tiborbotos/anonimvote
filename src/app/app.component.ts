@@ -13,7 +13,7 @@ enum AppMode {
     styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-    pollId = '72vzux';
+    pollId = 'dpzoee';
     errorMessage = '';
     currentUser: User;
     pollParameters: PollParameters;
@@ -65,9 +65,12 @@ export class AppComponent {
     }
 
     addNewOption(newOption: PollOption) {
-        newOption.addedBy = this.currentUser;
+        newOption.addedByName = this.currentUser.name;
+        newOption.addedById = this.currentUser.id;
+        newOption.id = this.pollOptions.length + 1;
 
         this.gunDb.addOption(this.pollId, newOption);
+        this.newOption = {} as PollOption;
     }
 
     private enterPoll(poll) {
@@ -81,10 +84,12 @@ export class AppComponent {
         this.gunDb.getOptions(this.pollId, (result) => {
             console.log('Options changed ', result);
 
-            result.path('addedBy').val((addedBy: User) => {
-                result.addedBy = addedBy;
+            const existingOption = this.pollOptions.find((pollOption) => pollOption.id === result.id);
+            if (!existingOption) {
                 this.pollOptions.push(result);
-            });
+            } else {
+                existingOption.label = result.label;
+            }
         });
     }
 }
