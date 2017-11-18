@@ -36,7 +36,7 @@ export interface PollOption {
 
 @Injectable()
 export class GunDb {
-    readonly gun; // location.origin + '/gun');
+    private readonly gun; // location.origin + '/gun');
     private readonly open = GunOpen;
     private readonly path = GunPath;
 

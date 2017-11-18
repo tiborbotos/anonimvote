@@ -1,3 +1,5 @@
+import {} from 'jasmine';
+
 import {TestBed, async} from '@angular/core/testing';
 
 import {AppComponent} from './app.component';
@@ -17,8 +19,7 @@ describe('AppComponent', () => {
                 NgbTabsetModule
             ],
             declarations: [
-                AppComponent,
-                GunDb
+                AppComponent
             ],
             providers: [{provide: GunDb, useClass: MockGunDb}]
         }).compileComponents();
@@ -30,16 +31,10 @@ describe('AppComponent', () => {
         expect(app).toBeTruthy();
     }));
 
-    xit(`should have as title 'Anonym Poll'`, async(() => {
-        const fixture = TestBed.createComponent(AppComponent);
-        const app = fixture.debugElement.componentInstance;
-        expect(app.title).toContain('Anonym Poll');
-    }));
-
-    xit('should render title in a h1 tag', async(() => {
+    it('should render title in a h1 tag', async(() => {
         const fixture = TestBed.createComponent(AppComponent);
         fixture.detectChanges();
         const compiled = fixture.debugElement.nativeElement;
-        expect(compiled.querySelector('h1').textContent).toContain('Anonymvote');
+        expect(compiled.querySelector('h1').textContent).toContain('Anonym Poll');
     }));
 });
